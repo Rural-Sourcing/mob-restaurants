@@ -6,7 +6,7 @@
   "apps": [
     {
       "root": "js",
-      "outDir": "dist/META-INF/resources",
+      "outDir": "src/main/resources/META-INF/resources",
       "assets": [
         "assets",
         "favicon.ico"

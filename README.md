@@ -75,64 +75,67 @@ rm -rf client
 
 And the Angular project directory should now be empty, so we delete it.
 
-Now we need to tell Maven how to build Angular.  Put the following in the `pom.xml`
+Now we need to tell Maven how to build Angular, but we only need to do this whole process when installing from scratch.  Put the following in the `pom.xml`
 
 ```
-<build>
-		<resources>
-			<resource>
-				<directory>dist</directory>
-			</resource>
-		</resources>
-		<plugins>
-			<plugin>
-				<groupId>com.github.eirslett</groupId>
-				<artifactId>frontend-maven-plugin</artifactId>
-				<version>1.6</version>
-				<configuration>
-					<nodeVersion>v9.2.0</nodeVersion>
-					<yarnVersion>v1.3.2</yarnVersion>
-				</configuration>
-				<executions>
-					<execution>
-						<id>install node and yarn</id>
-						<goals>
-							<goal>install-node-and-yarn</goal>
-						</goals>
-						<phase>generate-resources</phase>
-					</execution>
-					<execution>
-						<id>yarn install</id>
-						<goals>
-							<goal>yarn</goal>
-						</goals>
+		<profile>
+			<activation>
+				<file>
+					<missing>src/main/resources/META-INF/resources/index.html</missing>
+				</file>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.github.eirslett</groupId>
+						<artifactId>frontend-maven-plugin</artifactId>
+						<version>1.6</version>
 						<configuration>
-							<arguments>install</arguments>
+							<nodeVersion>v9.2.0</nodeVersion>
+							<yarnVersion>v1.3.2</yarnVersion>
 						</configuration>
-					</execution>
-					<execution>
-						<id>yarn lint</id>
-						<goals>
-							<goal>yarn</goal>
-						</goals>
-						<configuration>
-							<arguments>lint</arguments>
-						</configuration>
-					</execution>
-					<execution>
-						<id>yarn build</id>
-						<goals>
-							<goal>yarn</goal>
-						</goals>
-						<phase>generate-resources</phase>
-						<configuration>
-							<arguments>build</arguments>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+						<executions>
+							<execution>
+								<id>install node and yarn</id>
+								<goals>
+									<goal>install-node-and-yarn</goal>
+								</goals>
+								<phase>generate-resources</phase>
+							</execution>
+							<execution>
+								<id>yarn install</id>
+								<goals>
+									<goal>yarn</goal>
+								</goals>
+								<configuration>
+									<arguments>install</arguments>
+								</configuration>
+							</execution>
+							<execution>
+								<id>yarn lint</id>
+								<goals>
+									<goal>yarn</goal>
+								</goals>
+								<configuration>
+									<arguments>lint</arguments>
+								</configuration>
+							</execution>
+							<execution>
+								<id>yarn build</id>
+								<goals>
+									<goal>yarn</goal>
+								</goals>
+								<phase>generate-resources</phase>
+								<configuration>
+									<arguments>build</arguments>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 ```
 
 Almost there.  Next Angular needs to be informed about the changes to it's build environment. Open the `.angular-cli.json` file.
@@ -141,10 +144,10 @@ Almost there.  Next Angular needs to be informed about the changes to it's build
   "apps": [
     {
       "root": "js",
-      "outDir": "dist/META-INF/resources",
+      "outDir": "src/main/resources/META-INF/resources",
  ```
  
- This tells angular were to find its typescript files, and where to build them too. We have to use a path that includes META-INF/resources in order for Maven to properly transfer the files to the project jar file.
+ This tells angular were to find its typescript files, and where to build them to where Spring Boot and Maven will automatically pull them in for inclusion in the jar file.
  
 Later in the same file we need to tell the linter to look in js instead of src
 
@@ -160,4 +163,6 @@ Later in the same file we need to tell the linter to look in js instead of src
     },
 ```
 
-And that's all.  Tell Eclipse to update the project or run `mvn generate-resources` to trigger a build of the angular files. Then navigate to `http://localhost:8080` and you should now see the Angular base screen instead of the Spring Boot default.
+And that's all.  Tell Eclipse to update the project or run `mvn clean-install` to trigger a build of the angular files. Then navigate to `http://localhost:8080` and you should now see the Angular base screen instead of the Spring Boot default.
+
+While working on your project you should use `ng build --watch` as normal (Working on adding a hook to do `mvn generate resources` on build).
