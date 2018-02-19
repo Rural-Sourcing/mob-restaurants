@@ -21,6 +21,12 @@ jobs:
       MAVEN_OPTS: -Xmx3200m
 
     steps:
+      #Precheckout
+      - run: wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+      - run: sudo sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+      - run: sudo apt-get update
+      - run: sudo apt-get --only-upgrade install google-chrome-stable
+
       - checkout
 
       # Download and cache dependencies
