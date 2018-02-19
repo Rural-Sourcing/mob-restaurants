@@ -44,5 +44,11 @@ jobs:
           key: v1-dependencies-{{ checksum "pom.xml" }}
 
       # run tests!
-      - run: mvn test
+      - run:
+          name: Start Spring
+          command: mvn spring-boot:run
+          background: true
+      - run:
+          name: Run Maven Integration Tests
+          command: mvn integration-test -P test-runner
 
