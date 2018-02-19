@@ -44,7 +44,7 @@ jobs:
           key: v1-dependencies-{{ checksum "pom.xml" }}
 
       # run tests!
-      - rum:
+      - run:
           name: Install JAR
           command: mvn clean install
       - run:
