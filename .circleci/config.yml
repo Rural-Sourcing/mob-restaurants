@@ -44,6 +44,9 @@ jobs:
           key: v1-dependencies-{{ checksum "pom.xml" }}
 
       # run tests!
+      - rum:
+          name: Install JAR
+          command: mvn clean install
       - run:
           name: Start Spring
           command: mvn spring-boot:run
