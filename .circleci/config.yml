@@ -53,6 +53,10 @@ jobs:
           command: mvn spring-boot:run
           background: true
       - run:
+          name: Start Selenium
+          command: webdriver-manager start
+          background: true
+      - run:
           name: Run Maven Integration Tests
           command: mvn integration-test -P test-runner
 
