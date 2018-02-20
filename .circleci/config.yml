@@ -8,6 +8,7 @@ jobs:
     docker:
       # specify the version you desire here
       - image: circleci/openjdk:8-jdk
+      - image: selenium/standalone-chrome:3.1.0
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -51,10 +52,6 @@ jobs:
       - run:
           name: Start Spring
           command: mvn spring-boot:run
-          background: true
-      - run:
-          name: Start Selenium
-          command: webdriver-manager start
           background: true
       - run:
           name: Run Maven Integration Tests
